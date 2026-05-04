@@ -1,0 +1,367 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Buy vs Buy — Calculator Examples</title>
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --bg: #f7f6f2;
+      --surface: #ffffff;
+      --surface-muted: #f2f1ed;
+      --border: rgba(0,0,0,0.1);
+      --border-strong: rgba(0,0,0,0.18);
+      --text-primary: #1a1a18;
+      --text-secondary: #5a5a56;
+      --text-tertiary: #9a9a94;
+      --accent: #2a2a26;
+      --radius-md: 8px;
+      --radius-lg: 14px;
+    }
+
+    body {
+      font-family: 'Georgia', serif;
+      background: var(--bg);
+      color: var(--text-primary);
+      min-height: 100vh;
+      padding: 3rem 1.5rem 5rem;
+    }
+
+    .page-wrap {
+      max-width: 760px;
+      margin: 0 auto;
+    }
+
+    header {
+      margin-bottom: 3rem;
+      padding-bottom: 1.5rem;
+      border-bottom: 1px solid var(--border-strong);
+    }
+
+    header p.eyebrow {
+      font-family: 'Courier New', monospace;
+      font-size: 11px;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      color: var(--text-tertiary);
+      margin-bottom: 0.6rem;
+    }
+
+    header h1 {
+      font-size: 2rem;
+      font-weight: normal;
+      line-height: 1.25;
+      color: var(--text-primary);
+      margin-bottom: 0.75rem;
+    }
+
+    header p.subtitle {
+      font-size: 15px;
+      color: var(--text-secondary);
+      line-height: 1.6;
+      max-width: 560px;
+    }
+
+    .examples { display: flex; flex-direction: column; gap: 2rem; }
+
+    .card {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-lg);
+      overflow: hidden;
+    }
+
+    .card-header {
+      padding: 1.1rem 1.5rem 0.9rem;
+      border-bottom: 1px solid var(--border);
+      display: flex;
+      align-items: baseline;
+      gap: 1rem;
+    }
+
+    .card-header .num {
+      font-family: 'Courier New', monospace;
+      font-size: 11px;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      color: var(--text-tertiary);
+      white-space: nowrap;
+    }
+
+    .card-header h2 {
+      font-size: 15px;
+      font-weight: normal;
+      font-style: italic;
+      color: var(--text-primary);
+    }
+
+    .card-body { padding: 1.25rem 1.5rem; }
+
+    .context {
+      font-size: 13.5px;
+      color: var(--text-secondary);
+      line-height: 1.7;
+      margin-bottom: 1.25rem;
+      padding-bottom: 1.25rem;
+      border-bottom: 1px solid var(--border);
+    }
+
+    .io-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 14px;
+    }
+
+    @media (max-width: 520px) {
+      .io-grid { grid-template-columns: 1fr; }
+    }
+
+    .section {
+      background: var(--surface-muted);
+      border-radius: var(--radius-md);
+      padding: 0.85rem 1rem;
+    }
+
+    .section-label {
+      font-family: 'Courier New', monospace;
+      font-size: 10px;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      color: var(--text-tertiary);
+      margin-bottom: 10px;
+    }
+
+    .io-row {
+      display: flex;
+      justify-content: space-between;
+      align-items: baseline;
+      gap: 8px;
+      padding: 3.5px 0;
+    }
+
+    .io-key {
+      font-size: 12.5px;
+      color: var(--text-secondary);
+    }
+
+    .io-val {
+      font-size: 12.5px;
+      font-family: 'Courier New', monospace;
+      color: var(--text-primary);
+      text-align: right;
+    }
+
+    .right-col {
+      display: flex;
+      flex-direction: column;
+      gap: 14px;
+    }
+
+    .output-section {
+      background: var(--accent);
+      border-radius: var(--radius-md);
+      padding: 0.85rem 1rem;
+    }
+
+    .output-section .section-label {
+      color: rgba(255,255,255,0.4);
+    }
+
+    .output-row {
+      display: flex;
+      justify-content: space-between;
+      align-items: baseline;
+    }
+
+    .output-key {
+      font-size: 12px;
+      color: rgba(255,255,255,0.6);
+    }
+
+    .output-val {
+      font-size: 20px;
+      font-family: 'Courier New', monospace;
+      color: #ffffff;
+    }
+
+    .output-sub-row {
+      display: flex;
+      justify-content: space-between;
+      align-items: baseline;
+      padding: 3px 0;
+      border-top: 1px solid rgba(255,255,255,0.1);
+      margin-top: 6px;
+      padding-top: 6px;
+    }
+
+    .output-sub-key { font-size: 11.5px; color: rgba(255,255,255,0.5); }
+    .output-sub-val { font-size: 13px; font-family: 'Courier New', monospace; color: rgba(255,255,255,0.85); }
+
+    .conclusion-section {
+      background: var(--surface-muted);
+      border-radius: var(--radius-md);
+      padding: 0.85rem 1rem;
+      flex: 1;
+    }
+
+    .conclusion-section p {
+      font-size: 12.5px;
+      color: var(--text-secondary);
+      line-height: 1.6;
+      margin-bottom: 3px;
+    }
+
+    .conclusion-section p:last-child { margin-bottom: 0; }
+
+    footer {
+      margin-top: 3.5rem;
+      padding-top: 1.5rem;
+      border-top: 1px solid var(--border);
+      font-size: 12px;
+      color: var(--text-tertiary);
+      font-family: 'Courier New', monospace;
+    }
+  </style>
+</head>
+<body>
+<div class="page-wrap">
+
+  <header>
+    <p class="eyebrow">Calculator · Example log</p>
+    <h1>Buy cheap vs buy quality</h1>
+    <p class="subtitle">A set of worked examples showing how the breakeven calculator handles real purchasing decisions, from jewellery to footwear.</p>
+  </header>
+
+  <div class="examples">
+
+    <!-- Example 1 -->
+    <div class="card">
+      <div class="card-header">
+        <span class="num">Example 1</span>
+        <h2>Costume jewellery vs fine jewellery (designer brand)</h2>
+      </div>
+      <div class="card-body">
+        <p class="context">A piece of costume jewellery, a bangle brass with gold plating, from a French family-owned brand costs £150. A similarly designed piece of fine jewellery, a bangle of 18k gold, from Dior costs £9000.</p>
+        <div class="io-grid">
+          <div class="section">
+            <p class="section-label">Input</p>
+            <div class="io-row"><span class="io-key">Cheap item cost</span><span class="io-val">£150</span></div>
+            <div class="io-row"><span class="io-key">Replaced every</span><span class="io-val">2 years</span></div>
+            <div class="io-row"><span class="io-key">Lifespan of quality item</span><span class="io-val">15 years</span></div>
+            <div class="io-row"><span class="io-key">Actual price of quality item</span><span class="io-val">£9,000</span></div>
+            <div class="io-row"><span class="io-key">Return rate</span><span class="io-val">7%</span></div>
+            <div class="io-row"><span class="io-key">Inflation rate</span><span class="io-val">2.5%</span></div>
+            <div class="io-row"><span class="io-key">Annual appreciation</span><span class="io-val">10% (optimistic)</span></div>
+            <div class="io-row"><span class="io-key">Retained value at resale</span><span class="io-val">60%</span></div>
+          </div>
+          <div class="right-col">
+            <div class="output-section">
+              <p class="section-label">Output</p>
+              <div class="output-row">
+                <span class="output-key">Breakeven max price</span>
+                <span class="output-val">£6,192</span>
+              </div>
+            </div>
+            <div class="conclusion-section">
+              <p class="section-label">Conclusion</p>
+              <p>Fine jewellery is overpriced</p>
+              <p>Buy costume jewellery</p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Example 2 -->
+    <div class="card">
+      <div class="card-header">
+        <span class="num">Example 2</span>
+        <h2>Costume jewellery vs fine jewellery (same midmarket brand)</h2>
+      </div>
+      <div class="card-body">
+        <p class="context">A bangle of 18k gold vermeil costs £279. From the same brand, with the same design, a bangle of 14k pure gold costs £2750. Annual appreciation in line with inflation only as this is not a designer brand with the ability to continually increase retail price. Resale value is low as there appears to be significant markup on the estimated weight in gold; could be lower if considering melt value.</p>
+        <div class="io-grid">
+          <div class="section">
+            <p class="section-label">Input</p>
+            <div class="io-row"><span class="io-key">Cheap item cost</span><span class="io-val">£279</span></div>
+            <div class="io-row"><span class="io-key">Replaced every</span><span class="io-val">2 years</span></div>
+            <div class="io-row"><span class="io-key">Lifespan of quality item</span><span class="io-val">15 years</span></div>
+            <div class="io-row"><span class="io-key">Actual price of quality item</span><span class="io-val">£2,750</span></div>
+            <div class="io-row"><span class="io-key">Return rate</span><span class="io-val">7%</span></div>
+            <div class="io-row"><span class="io-key">Inflation rate</span><span class="io-val">2.5%</span></div>
+            <div class="io-row"><span class="io-key">Annual appreciation</span><span class="io-val">2.5%</span></div>
+            <div class="io-row"><span class="io-key">Retained value at resale</span><span class="io-val">50%</span></div>
+          </div>
+          <div class="right-col">
+            <div class="output-section">
+              <p class="section-label">Output</p>
+              <div class="output-row">
+                <span class="output-key">Breakeven max price</span>
+                <span class="output-val">£2,194</span>
+              </div>
+            </div>
+            <div class="conclusion-section">
+              <p class="section-label">Conclusion</p>
+              <p>Fine jewellery is overpriced</p>
+              <p>Buy costume jewellery</p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Example 3 -->
+    <div class="card">
+      <div class="card-header">
+        <span class="num">Example 3</span>
+        <h2>Cheap loafers vs Loro Piana loafers</h2>
+      </div>
+      <div class="card-body">
+        <p class="context">A pair of beige loafers lined with faux fur cost £50 when purchased in Tokyo on vacation. Loro Piana's Summer Charms Walk Loafers, suede lined with beaver fur, cost £1785. No resale value expected despite the high end brand; the shoes will probably eventually get worn out. Calculator does not have ability to factor in longer lifespan with repairs.</p>
+        <div class="io-grid">
+          <div class="section">
+            <p class="section-label">Input</p>
+            <div class="io-row"><span class="io-key">Cheap item cost</span><span class="io-val">£50</span></div>
+            <div class="io-row"><span class="io-key">Replaced every</span><span class="io-val">1 year</span></div>
+            <div class="io-row"><span class="io-key">Lifespan of quality item</span><span class="io-val">20 years</span></div>
+            <div class="io-row"><span class="io-key">Actual price of quality item</span><span class="io-val">£1,785</span></div>
+            <div class="io-row"><span class="io-key">Return rate</span><span class="io-val">7%</span></div>
+            <div class="io-row"><span class="io-key">Inflation rate</span><span class="io-val">2.5%</span></div>
+            <div class="io-row"><span class="io-key">Annual appreciation</span><span class="io-val">0%</span></div>
+            <div class="io-row"><span class="io-key">Retained value at resale</span><span class="io-val">0%</span></div>
+          </div>
+          <div class="right-col">
+            <div class="output-section">
+              <p class="section-label">Output</p>
+              <div class="output-row">
+                <span class="output-key">Breakeven max price</span>
+                <span class="output-val">£641</span>
+              </div>
+              <div class="output-sub-row">
+                <span class="output-sub-key">Breakeven for 10 years</span>
+                <span class="output-sub-val">£388</span>
+              </div>
+              <div class="output-sub-row">
+                <span class="output-sub-key">Breakeven for 5 years</span>
+                <span class="output-sub-val">£215</span>
+              </div>
+            </div>
+            <div class="conclusion-section">
+              <p class="section-label">Conclusion</p>
+              <p>Loro Piana is overpriced</p>
+              <p>May be possible to get bespoke shoes for this price range...</p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+  </div>
+
+  <footer>Generated example log — all content unchanged from source</footer>
+
+</div>
+</body>
+</html>
